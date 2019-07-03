@@ -1,7 +1,10 @@
 package edu.cnm.deepdive.qodclient.controller;
 
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -17,27 +20,39 @@ import edu.cnm.deepdive.qodclient.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
+  private MainViewModel viewModel;
   private LiveData<Quote> randomQuote;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    setupToolbar();
+    setupFab();
+    setupViewModel();
+  }
+
+  private void setupViewModel() {
+    View rootView = findViewById(R.id.root_view);
+    viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+    viewModel.getRandomQuote().observe(this, (quote) -> {
+      AlertDialog dialog = new AlertDialog.Builder(this)
+          .setTitle("Random Quote") // TODO Extract to resource.
+          .setMessage(quote.getText() + quote.getCombinedSources())
+          .setPositiveButton("Cool!", (dialogInterface, i) -> {})
+          .create();
+      dialog.show();
+        });
+  }
+
+  private void setupFab() {
+    FloatingActionButton fab = findViewById(R.id.fab);
+    fab.setOnClickListener(view -> viewModel.getRandomQuote());
+  }
+
+  private void setupToolbar() {
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-
-    FloatingActionButton fab = findViewById(R.id.fab);
-    fab.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            .setAction("Action", null).show();
-      }
-    });
-    MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-    viewModel.getRandomQuote().observe(this, (quote) ->
-      Toast.makeText(this, quote.getText(), Toast.LENGTH_LONG).show()
-    );
   }
 
   @Override
