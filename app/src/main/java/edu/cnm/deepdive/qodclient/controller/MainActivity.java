@@ -3,6 +3,8 @@ package edu.cnm.deepdive.qodclient.controller;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.LiveData;
@@ -16,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import edu.cnm.deepdive.qodclient.R;
 import edu.cnm.deepdive.qodclient.model.Quote;
+import edu.cnm.deepdive.qodclient.service.QodService;
 import edu.cnm.deepdive.qodclient.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +33,20 @@ public class MainActivity extends AppCompatActivity {
     setupToolbar();
     setupFab();
     setupViewModel();
+    //setupButton();
+    Button button = (Button)findViewById(R.id.search_button);
+
+    button.setOnClickListener(
+        new Button.OnClickListener() {
+          public void onClick(View view) {
+            ListView list_view1 =
+                (ListView)findViewById(R.id.list_view1);
+
+          }
+        }
+    );
+
+
   }
 
   private void setupViewModel() {
@@ -42,7 +59,20 @@ public class MainActivity extends AppCompatActivity {
           .setPositiveButton("Cool!", (dialogInterface, i) -> {})
           .create();
       dialog.show();
-        });
+    });
+    // Note: the placement of this observer might be wrong; the
+    // Does a search argument need to be passed to getRequestResult()?;
+    // and perhaps a QuoteList class needs to be defined?
+
+    //viewModel.getRequestResult().observe(this, (quoteList) -> {
+    //  AlertDialog dialog = new AlertDialog.Builder(this)
+    //      .setTitle("Quote List")
+    //      .setMessage(quoteList.getText() + quoteList.getCombinedSources())
+    //      .setPositiveButton("Cool!", (dialogInterface, i) -> {})
+    //      .create();
+    //  dialog.show();
+    //});
+
   }
 
   private void setupFab() {
@@ -54,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
   }
+
+  //private void setupButton() {
+  //  Button button = (Button)findViewById(R.id.search_button);
+  //  button.setOnClickListener(view -> viewModel.getRequestResult());
+  //}
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
 
-    //noinspection SimplifiableIfStatement
+    //no inspection SimplifiableIfStatement
     if (id == R.id.action_settings) {
       return true;
     }
